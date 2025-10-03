@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import fetch from "node-fetch"; // npm install node-fetch@2
 import { translate } from "@vitalets/google-translate-api";
 
 const app = express();
@@ -50,6 +51,16 @@ app.get("/translate", async (req, res) => {
     res.status(500).json({ success: false, error: "Quick test failed" });
   }
 });
+
+// ✅ Ping remote URL every 10 seconds to keep awake
+setInterval(async () => {
+  try {
+    const response = await fetch("https://libby.onrender.com/translate");
+    console.log("Pinged remote server:", response.status);
+  } catch (err) {
+    console.error("Ping failed:", err.message);
+  }
+}, 10000); // 10000 ms = 10 seconds
 
 app.listen(PORT, () => {
   console.log(`🚀 Translation API running on http://localhost:${PORT}`);
